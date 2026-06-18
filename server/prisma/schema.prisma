@@ -1,0 +1,50 @@
+// Persistent data for the RPS remaster. Realtime/ephemeral state (queue, active
+// lobbies, in-progress rounds) lives in server memory via Socket.IO, not here.
+generator client {
+  provider      = "prisma-client-js"
+  // "native" for local dev; musl target for the Alpine-based Docker image.
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String?  @unique
+  password  String? // bcrypt hash; null for guest accounts
+  isGuest   Boolean  @default(false)
+  // Ranked stats
+  elo       Int      @default(1000)
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  draws     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  matchesAsP1 Match[] @relation("MatchP1")
+  matchesAsP2 Match[] @relation("MatchP2")
+}
+
+model Match {
+  id           String    @id @default(cuid())
+  mode         String // "casual" | "ranked" | "ai"
+  player1Id    String
+  player2Id    String? // null for AI opponent
+  player1      User      @relation("MatchP1", fields: [player1Id], references: [id])
+  player2      User?     @relation("MatchP2", fields: [player2Id], references: [id])
+  player1Score Int       @default(0)
+  player2Score Int       @default(0)
+  winnerId     String? // null = draw / abandoned
+  rounds       Json? // [{ p1: "rock", p2: "paper", result: "p2" }, ...]
+  eloDelta     Int? // ELO points moved (ranked only)
+  createdAt    DateTime  @default(now())
+  endedAt      DateTime?
+
+  @@index([player1Id])
+  @@index([player2Id])
+}
+
+// connect-pg-simple manages its own "session" table; not modeled here.
