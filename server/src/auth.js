@@ -20,7 +20,8 @@ export const sessionMiddleware = session({
   cookie: {
     httpOnly: true,
     sameSite: "lax",
-    secure: false, // local http; set true behind HTTPS
+    // false for local http; set COOKIE_SECURE=true when serving over HTTPS.
+    secure: process.env.COOKIE_SECURE === "true",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   },
 });

@@ -1,8 +1,18 @@
 # Rock Paper Scissors — Remaster ✊✋✌️
 
+[![CI](https://github.com/reannu123/rock-paper-scissors-remaster/actions/workflows/ci.yml/badge.svg)](https://github.com/reannu123/rock-paper-scissors-remaster/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-realtime-010101?logo=socketdotio&logoColor=white)
+![Postgres](https://img.shields.io/badge/PostgreSQL-Prisma-336791?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-compose-2496ed?logo=docker&logoColor=white)
+
 Realtime, multiplayer Rock Paper Scissors you can host yourself. A 2023 Firebase
 prototype rebuilt from the ground up to run **fully local with one command** and
 **no cloud accounts, API keys, or subscriptions**.
+
+📄 **[Read the case study →](docs/CASE_STUDY.md)** · 🚀 **[Deploy guide →](docs/DEPLOY.md)**
 
 > **Status:** Working. The full stack builds and runs with
 > `docker compose up --build`, and realtime PvP, ranked ELO, VS-AI, and session

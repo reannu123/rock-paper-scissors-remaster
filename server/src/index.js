@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { prisma } from "./db.js";
@@ -16,13 +18,24 @@ const ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:8080";
 
 const app = express();
 app.set("trust proxy", 1);
-app.use(express.json());
+// Secure headers. Allow cross-origin resource policy because the client is
+// served from a different origin (nginx :8080) than this API (:4000).
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(express.json({ limit: "10kb" })); // cap body size
 app.use(cors({ origin: ORIGIN, credentials: true }));
 app.use(sessionMiddleware);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-app.use("/api/auth", authRouter);
+// Throttle auth endpoints to blunt credential stuffing / guest-spam.
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many attempts, please slow down." },
+});
+app.use("/api/auth", authLimiter, authRouter);
 
 app.get("/api/me", async (req, res) => {
   const user = await getSessionUser(req);
