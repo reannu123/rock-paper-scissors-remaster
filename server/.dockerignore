@@ -1,0 +1,8 @@
+# Keep the build context lean and prevent the host's node_modules (built for a
+# different platform / with devDeps) from overwriting the image's clean install.
+node_modules
+npm-debug.log*
+.env
+.env.*
+*.log
+.DS_Store
