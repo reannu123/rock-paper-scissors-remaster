@@ -5,22 +5,41 @@ Central direction lives in `~/Freelance/NOW.md`; this file tracks the build.
 
 ## Now
 
-Build complete — see Done. Remaining ideas are all in Later (parked).
+Build complete, pushed, and publicly deployed at `https://rps.reannu.dev`.
+All further ideas are optional flagship polish/features.
 
-## Next (flagship polish — optional)
+## Next
 
-- [ ] Hosted live demo (Fly.io / Render + managed Postgres) — see docs/DEPLOY.md.
-- [ ] Short gameplay GIF/recording for the README (needs ffmpeg or a gif lib;
-      native `canvas` build wasn't available in the build env).
-- [ ] Socket.IO integration test in CI (a real two-client match assertion).
+- No active work. The flagship remaster now has CI, GHCR image publishing, and
+  a verified pm-docker public demo.
 
-## Later (parked, do not block revival)
+## Flagship polish — high leverage (ordered by impact)
 
-- [ ] Admin surface (port `RPS-Admin`): user/match moderation dashboard.
-- [ ] Redis adapter for multi-instance Socket.IO scaling.
-- [ ] Spectator mode, in-match chat, friend invites / private rooms.
+- [x] **Live hosted demo** — deployed on pm-docker at `https://rps.reannu.dev`
+      with GHCR client/server images, persisted Postgres volume, NPM proxy
+      host `id=31`, public `/api/health` 200, public homepage 200, and public
+      guest-session smoke passing.
+- [ ] **Gameplay GIF/recording in the README** — couldn't build one in the dev
+      env (no ffmpeg; native `canvas` wouldn't compile). A ~5s screen capture of a
+      live match would make the repo pop.
+- [ ] **Socket.IO integration test in CI** — boot server + a test Postgres, run a
+      real two-client match assertion (formalizes the manual `/tmp` proof).
+- [ ] **Reconnect-into-match** + opponent-disconnect grace timer — makes
+      multiplayer feel production-grade (currently a disconnect tears the match down).
+
+## Flagship features — bigger builds
+
+- [ ] **Port the `RPS-Admin` surface** — moderation + match inspection dashboard.
+      Maps directly to the target "internal tools / dashboards" client work.
+- [ ] **Private rooms / friend invites** — share a code to play a specific person.
+- [ ] Spectator mode; in-match chat.
+- [ ] **Redis adapter** for multi-instance Socket.IO scaling (documented scale path).
 - [ ] Cosmetics / avatars; sound effects.
-- [ ] CI (lint/build/test) — aligns with the inbox "GitHub Actions" idea.
+
+## Nice polish
+
+- [ ] Favicon + Open Graph meta tags (shared links render a preview card).
+- [ ] Persist and show each player's recent match history on a profile page.
 
 ## Done
 
@@ -46,10 +65,17 @@ Build complete — see Done. Remaining ideas are all in Later (parked).
       hardening (helmet, auth rate-limiting, body limits, env-driven secure
       cookie) verified (429 on abuse, browser auth still works); case study +
       deploy guide; README badges. Pushed public to GitHub.
+- [x] Added GHCR publishing and pm-docker deployment config on 2026-07-01:
+      commit `5003b63`; CI run `28464303820` passed and Docker Image CD run
+      `28464303773` published client/server images.
 
 ## Known limitations to document, not fix now
 
 - Single server instance only (in-memory active-match state) — Redis is the
   documented scale path.
-- No automated tests yet (manual verification + documented smoke test).
+- Unit tests cover game rules + ELO; realtime flow is covered by a manual
+  harness, not yet an automated integration test in CI.
+- CI workflow is active on GitHub; its first run passed 2026-06-24.
+- Public demo is live at `https://rps.reannu.dev`; same-origin API and
+  Socket.IO proxying are configured through the client nginx container.
 - Admin app deferred.
