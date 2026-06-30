@@ -45,4 +45,6 @@ jobs:
       - name: Validate compose file
         run: |
           cp .env.example .env
-          docker compose config --quiet && echo "compose OK"
+          docker compose config --quiet
+          POSTGRES_PASSWORD=dummy SESSION_SECRET=dummy docker compose -f compose.deploy.yaml config --quiet
+          echo "compose OK"

@@ -1,0 +1,22 @@
+app: rock-paper-scissors-remaster
+public_url: https://rps.reannu.dev
+health_path: /api/health
+images:
+  client: ghcr.io/reannu123/rock-paper-scissors-remaster-client
+  server: ghcr.io/reannu123/rock-paper-scissors-remaster-server
+image_tag: main
+host: pm-docker
+host_ip: 192.168.0.125
+host_port: 3024
+deploy_dir: /docker/compose/rock-paper-scissors-remaster
+compose_file: compose.deploy.yaml
+service: client
+proxy:
+  host: raspberrypi
+  manager: npm
+  base_url: http://192.168.0.111:81
+  domain: rps.reannu.dev
+  forward_scheme: http
+  forward_host: 192.168.0.125
+  forward_port: 3024
+  allow_websocket_upgrade: true

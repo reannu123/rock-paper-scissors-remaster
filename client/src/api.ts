@@ -1,7 +1,9 @@
 import { io, Socket } from "socket.io-client";
 
+const configuredServerUrl = import.meta.env.VITE_SERVER_URL as string | undefined;
+
 export const SERVER_URL =
-  (import.meta.env.VITE_SERVER_URL as string) || "http://localhost:4000";
+  configuredServerUrl === undefined ? "http://localhost:4000" : configuredServerUrl;
 
 export type User = {
   id: string;
@@ -33,7 +35,9 @@ export async function api<T = any>(
 let socket: Socket | null = null;
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io(SERVER_URL, { withCredentials: true, autoConnect: true });
+    socket = SERVER_URL
+      ? io(SERVER_URL, { withCredentials: true, autoConnect: true })
+      : io({ withCredentials: true, autoConnect: true });
   }
   return socket;
 }
